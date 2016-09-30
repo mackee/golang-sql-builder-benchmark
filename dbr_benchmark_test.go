@@ -58,9 +58,12 @@ func BenchmarkDbrSelectComplex(b *testing.B) {
 			Distinct().
 			From("c").
 			Where("d = ? OR e = ?", 1, "wat").
-			Where(dbr.Eq{"f": 2, "x": "hi"}).
+			Where(dbr.Eq("f", 2)).
+			Where(dbr.Eq("x", "hi")).
+			Where(dbr.Eq("f", 2)).
+			Where(dbr.Eq("x", "hi")).
 			Where(map[string]interface{}{"g": 3}).
-			Where(dbr.Eq{"h": []int{1, 2, 3}}).
+			Where(dbr.Eq("h", []int{1, 2, 3})).
 			GroupBy("i").
 			GroupBy("ii").
 			GroupBy("iii").
@@ -89,7 +92,8 @@ func BenchmarkDbrSelectSubquery(b *testing.B) {
 		sess.Select("a", "b", fmt.Sprintf("(%s) AS subq", subQuery)).
 			From("c").
 			Distinct().
-			Where(dbr.Eq{"f": 2, "x": "hi"}).
+			Where(dbr.Eq("f", 2)).
+			Where(dbr.Eq("x", "hi")).
 			Where(map[string]interface{}{"g": 3}).
 			OrderBy("l").
 			OrderBy("l").
@@ -131,8 +135,8 @@ func BenchmarkDbrUpdateSetColumns(b *testing.B) {
 			Set("bar", dbr.Expr("COALESCE(bar, 0) + 1")).
 			Set("c", 2).
 			Where("id = ?", 9).
-			Limit(10).
-			Offset(20).
+			//Limit(10).
+			//Offset(20).
 			ToSql()
 	}
 }
@@ -145,8 +149,8 @@ func BenchmarkDbrUpdateSetMap(b *testing.B) {
 		sess.Update("mytable").
 			SetMap(map[string]interface{}{"b": 1, "c": 2, "bar": dbr.Expr("COALESCE(bar, 0) + 1")}).
 			Where("id = ?", 9).
-			Limit(10).
-			Offset(20).
+			//Limit(10).
+			//Offset(20).
 			ToSql()
 	}
 }
@@ -161,9 +165,9 @@ func BenchmarkDbrDelete(b *testing.B) {
 	for n := 0; n < b.N; n++ {
 		sess.DeleteFrom("test_table").
 			Where("b = ?", 1).
-			OrderBy("c").
+			//OrderBy("c").
 			Limit(2).
-			Offset(3).
+			//Offset(3).
 			ToSql()
 	}
 }
